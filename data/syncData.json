@@ -1,0 +1,32 @@
+[
+  {
+    "currencyCode": "USD",
+    "buyRate": 41.3,
+    "sellRate": 41.9,
+    "nbuRate": 41.6
+  },
+  {
+    "currencyCode": "EUR",
+    "buyRate": 46.9,
+    "sellRate": 47.6,
+    "nbuRate": 47.1
+  },
+  {
+    "currencyCode": "PLN",
+    "buyRate": 10.6,
+    "sellRate": 11.4,
+    "nbuRate": 11.1
+  },
+  {
+    "currencyCode": "GBP",
+    "buyRate": 55,
+    "sellRate": 56.4,
+    "nbuRate": 55.4
+  },
+  {
+    "currencyCode": "CHF",
+    "buyRate": 49.8,
+    "sellRate": 50.7,
+    "nbuRate": 50.2
+  }
+]

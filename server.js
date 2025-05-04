@@ -1,21 +1,33 @@
-const path = require('path')
-const express = require('express')
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
 
-const app = express()
-const PORT = 3000
+const app = express();
+const PORT = 3000;
+
+const adminRoutes = require('./routes');
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('', (req, res) => {
-    res.render('index')
-})
+const { getAllRates } = require('./repositories/syncRepository');
+
+app.get('/', (req, res) => {
+    const rates = getAllRates();
+    res.render('index', { rates });
+});
 
 app.get('/admin', (req, res) => {
-    res.render('admin')
-})
+    const rates = getAllRates();
+    res.render('admin', { rates });
+});
+
+
+app.use(adminRoutes);
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-})
+    console.log(`App listening at http://localhost:${PORT}`);
+});

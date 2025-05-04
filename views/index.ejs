@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Головна</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <title>Курси валют</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>Currency App</h1>
+    <nav>
+      <a href="/admin">Адмін-панель</a>
+    </nav>
 
-  <nav>
-    <ul>
-      <li><a href="/">Головна</a></li>
-      <li><a href="/admin">Адмін-панель</a></li>
-    </ul>
-  </nav>
-
-  <section>
-    <p>Перейдіть на головну сторінку, щоб переглянути курси валют.</p>
-    <a href="/" class="btn">Перейти до списку</a>
-  </section>
+    <h1>Курси валют на сьогодні</h1>
+    <table>
+        <tr>
+            <th>Валюта</th>
+            <th>Купівля</th>
+            <th>Продаж</th>
+            <th>Курс НБУ</th>
+        </tr>
+        <% rates.forEach(rate => { %>
+            <tr>
+                <td><%= rate.currencyCode %></td>
+                <td><%= rate.buyRate %></td>
+                <td><%= rate.sellRate %></td>
+                <td><%= rate.nbuRate %></td>
+            </tr>
+        <% }) %>
+    </table>
 </body>
 </html>

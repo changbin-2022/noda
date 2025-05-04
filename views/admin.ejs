@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель адміністратора</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/">На головну</a>
+    </nav>
+
+    <h1>Адмін-панель: Керування валютами</h1>
+
+    <h2>Додати валюту</h2>
+    <form action="/admin/add" method="POST">
+        <input type="text" name="currencyCode" placeholder="Код валюти (наприклад, USD)" required>
+        <input type="number" step="0.01" name="buyRate" placeholder="Курс купівлі" required>
+        <input type="number" step="0.01" name="sellRate" placeholder="Курс продажу" required>
+        <input type="number" step="0.01" name="nbuRate" placeholder="Курс НБУ" required>
+        <button type="submit">Додати</button>
+    </form>
+
+    <h2>Редагувати валюту</h2>
+    <form action="/admin/edit" method="POST">
+        <input type="text" name="currencyCodeEdit" placeholder="Код валюти для редагування" required>
+        <input type="number" step="0.01" name="newBuyRate" placeholder="Новий курс купівлі">
+        <input type="number" step="0.01" name="newSellRate" placeholder="Новий курс продажу">
+        <input type="number" step="0.01" name="newNbuRate" placeholder="Новий курс НБУ">
+        <button type="submit">Оновити</button>
+    </form>
+
+    <h2>Видалити валюту</h2>
+    <form action="/admin/delete" method="POST">
+        <input type="text" name="currencyCodeDelete" placeholder="Код валюти для видалення" required>
+        <button type="submit">Видалити</button>
+    </form>
+</body>
+</html>
