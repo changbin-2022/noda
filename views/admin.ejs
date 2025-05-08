@@ -9,14 +9,19 @@
     <nav>
         <a href="/">Синхронна панель</a>
         <a href="/callback">Callback панель</a>
+        <a href="/promise">Promise панель</a>
+        <a href="/async">Async/Await панель</a>
         <a href="/admin/sync">Синхронна адмін-панель</a>
         <a href="/admin/callback">Callback адмін-панель</a>
+        <a href="/admin/promise">Promise адмін-панель</a>
+        <a href="/admin/async">Async/Await адмін-панель</a>
     </nav>
 
     <h1>Адмін-панель: Керування валютами</h1>
 
     <h2>Додати валюту</h2>
-    <form action="/admin/add" method="POST">
+    <form action="<%= isCallback ? '/admin-cb/add' : (isPromise ? '/admin-pm/add' : (isAsync ? '/admin-async/add' : '/admin/add')) %>
+        " method="POST">
         <input type="text" name="currencyCode" placeholder="Код валюти (наприклад, USD)" required>
         <input type="number" step="0.01" name="buyRate" placeholder="Курс купівлі" required>
         <input type="number" step="0.01" name="sellRate" placeholder="Курс продажу" required>
@@ -25,7 +30,8 @@
     </form>
 
     <h2>Редагувати валюту</h2>
-    <form action="/admin/edit" method="POST">
+    <form action="<%= isCallback ? '/admin-cb/edit' : (isPromise ? '/admin-pm/edit' : (isAsync ? '/admin-async/edit' : '/admin/edit')) %>
+        " method="POST">
         <input type="text" name="currencyCodeEdit" placeholder="Код валюти для редагування" required>
         <input type="number" step="0.01" name="newBuyRate" placeholder="Новий курс купівлі">
         <input type="number" step="0.01" name="newSellRate" placeholder="Новий курс продажу">
@@ -34,7 +40,8 @@
     </form>
 
     <h2>Видалити валюту</h2>
-    <form action="/admin/delete" method="POST">
+    <form action="<%= isCallback ? '/admin-cb/delete' : (isPromise ? '/admin-pm/delete' : (isAsync ? '/admin-async/delete' : '/admin/delete')) %>
+        " method="POST">
         <input type="text" name="currencyCodeDelete" placeholder="Код валюти для видалення" required>
         <button type="submit">Видалити</button>
     </form>
