@@ -28,5 +28,15 @@
     "currencyId": 2,
     "date": "2025-04-24",
     "rate": 40.2
+  },
+  {
+    "currencyId": 2,
+    "date": "2025-05-11",
+    "rate": 40.2
+  },
+  {
+    "currencyId": 1,
+    "date": "2025-05-11",
+    "rate": 36.5
   }
 ]

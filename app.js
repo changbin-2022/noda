@@ -5,6 +5,8 @@ const currencyController = require('./controllers/currencyController');
 const app = express();
 const PORT = 3000;
 
+app.use(express.static('public'));
+
 app.use(express.urlencoded({ extended: true }));
 const adminRouter = require('./routes/adminRouter');
 
