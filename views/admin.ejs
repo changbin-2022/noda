@@ -1,49 +1,75 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Панель адміністратора</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <title>Адмін-панель: Керування валютами та курсами</title>
 </head>
 <body>
-    <nav>
-        <a href="/">Синхронна панель</a>
-        <a href="/callback">Callback панель</a>
-        <a href="/promise">Promise панель</a>
-        <a href="/async">Async/Await панель</a>
-        <a href="/admin/sync">Синхронна адмін-панель</a>
-        <a href="/admin/callback">Callback адмін-панель</a>
-        <a href="/admin/promise">Promise адмін-панель</a>
-        <a href="/admin/async">Async/Await адмін-панель</a>
-    </nav>
+  <h1>Адмін-панель</h1>
 
-    <h1>Адмін-панель: Керування валютами</h1>
+  <h2>Додати нову валюту</h2>
+  <form action="/admin/currency/create" method="post">
+    <label for="name">Назва валюти:</label>
+    <input type="text" id="name" name="name" required>
 
-    <h2>Додати валюту</h2>
-    <form action="<%= isCallback ? '/admin-cb/add' : (isPromise ? '/admin-pm/add' : (isAsync ? '/admin-async/add' : '/admin/add')) %>
-        " method="POST">
-        <input type="text" name="currencyCode" placeholder="Код валюти (наприклад, USD)" required>
-        <input type="number" step="0.01" name="buyRate" placeholder="Курс купівлі" required>
-        <input type="number" step="0.01" name="sellRate" placeholder="Курс продажу" required>
-        <input type="number" step="0.01" name="nbuRate" placeholder="Курс НБУ" required>
-        <button type="submit">Додати</button>
-    </form>
+    <label for="code">Код валюти:</label>
+    <input type="text" id="code" name="code" required>
 
-    <h2>Редагувати валюту</h2>
-    <form action="<%= isCallback ? '/admin-cb/edit' : (isPromise ? '/admin-pm/edit' : (isAsync ? '/admin-async/edit' : '/admin/edit')) %>
-        " method="POST">
-        <input type="text" name="currencyCodeEdit" placeholder="Код валюти для редагування" required>
-        <input type="number" step="0.01" name="newBuyRate" placeholder="Новий курс купівлі">
-        <input type="number" step="0.01" name="newSellRate" placeholder="Новий курс продажу">
-        <input type="number" step="0.01" name="newNbuRate" placeholder="Новий курс НБУ">
-        <button type="submit">Оновити</button>
-    </form>
+    <button type="submit">Додати валюту</button>
+  </form>
 
-    <h2>Видалити валюту</h2>
-    <form action="<%= isCallback ? '/admin-cb/delete' : (isPromise ? '/admin-pm/delete' : (isAsync ? '/admin-async/delete' : '/admin/delete')) %>
-        " method="POST">
-        <input type="text" name="currencyCodeDelete" placeholder="Код валюти для видалення" required>
-        <button type="submit">Видалити</button>
-    </form>
+  <hr>
+
+  <h2>Редагувати або видалити валюту</h2>
+  <table border="1">
+    <tr>
+      <th>Назва</th>
+      <th>Код</th>
+      <th>Дії</th>
+    </tr>
+    <% currencies.forEach(currency => { %>
+      <tr>
+        <form action="/admin/currency/update/<%= currency.id %>" method="post">
+          <td>
+            <input type="text" name="name" value="<%= currency.name %>" required>
+          </td>
+          <td>
+            <input type="text" name="code" value="<%= currency.code %>" required>
+          </td>
+          <td>
+            <button type="submit">Оновити</button>
+          </form>
+          <form action="/admin/currency/delete/<%= currency.id %>" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Ви впевнені, що хочете видалити валюту?')">Видалити</button>
+          </form>
+          </td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <hr>
+
+  <h2>Додати курс обміну валюти на певний день</h2>
+  <form action="/admin/rate/create" method="post">
+    <label for="currencyId">Оберіть валюту:</label>
+    <select name="currencyId" id="currencyId" required>
+      <% currencies.forEach(currency => { %>
+        <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
+      <% }) %>
+    </select>
+
+    <label for="date">Дата:</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="rate">Курс:</label>
+    <input type="number" step="0.0001" id="rate" name="rate" required>
+
+    <button type="submit">Додати курс</button>
+  </form>
+
+  <hr>
+
+  <a href="/">Назад на головну</a>
+
 </body>
 </html>

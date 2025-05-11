@@ -1,38 +1,52 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Курси валют</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <title>Курси валют на сьогодні</title>
 </head>
 <body>
-    <nav>
-        <a href="/">Синхронна панель</a>
-        <a href="/callback">Callback панель</a>
-        <a href="/promise">Promise панель</a>
-        <a href="/async">Async/Await панель</a>
-        <a href="/admin/sync">Синхронна адмін-панель</a>
-        <a href="/admin/callback">Callback адмін-панель</a>
-        <a href="/admin/promise">Promise адмін-панель</a>
-        <a href="/admin/async">Async/Await адмін-панель</a>
-    </nav>
+  <h1>Курси валют на сьогодні</h1>
 
-    <h1>Курси валют на сьогодні</h1>
-    <table>
-        <tr>
-            <th>Валюта</th>
-            <th>Купівля</th>
-            <th>Продаж</th>
-            <th>Курс НБУ</th>
-        </tr>
-        <% rates.forEach(rate => { %>
-            <tr>
-                <td><%= rate.currencyCode %></td>
-                <td><%= rate.buyRate %></td>
-                <td><%= rate.sellRate %></td>
-                <td><%= rate.nbuRate %></td>
-            </tr>
-        <% }) %>
-    </table>
+  <table border="1">
+    <tr>
+      <th>Валюта</th>
+      <th>Курс</th>
+    </tr>
+    <% rates.forEach(rate => { 
+         const currency = currencies.find(c => c.id === rate.currencyId);
+    %>
+      <tr>
+        <td><%= currency ? currency.name : 'Unknown' %> (<%= currency ? currency.code : '' %>)</td>
+        <td><%= rate.rate %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <hr>
+
+  <h2>Перегляд історії курсу валюти</h2>
+  <form action="/currency" method="get">
+    <label for="currencyId">Оберіть валюту:</label>
+    <select name="currencyId" id="currencyId" required>
+      <% currencies.forEach(currency => { %>
+        <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
+      <% }) %>
+    </select>
+    <br><br>
+
+    <label for="startDate">Початкова дата:</label>
+    <input type="date" id="startDate" name="startDate" required>
+
+    <label for="endDate">Кінцева дата:</label>
+    <input type="date" id="endDate" name="endDate" required>
+
+    <br><br>
+    <button type="submit">Переглянути історію</button>
+  </form>
+
+  <hr>
+
+  <a href="/admin">Перейти в адмін-панель</a>
+
 </body>
 </html>

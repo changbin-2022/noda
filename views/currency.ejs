@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Історія курсу валют</title>
+</head>
+<body>
+  <h1>Історія курсу валюти</h1>
+  
+  <h2>Результати</h2>
+  <table border="1">
+    <tr>
+      <th>Дата</th>
+      <th>Курс</th>
+    </tr>
+    <% rates.forEach(rate => { %>
+      <tr>
+        <td><%= rate.date %></td>
+        <td><%= rate.rate %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <br><a href="/">Повернутись на головну сторінку</a>
+</body>
+</html>

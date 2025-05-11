@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Euro",
+    "code": "EUR"
+  },
+  {
+    "id": 2,
+    "name": "British Pound",
+    "code": "GBP"
+  },
+  {
+    "id": 4,
+    "name": "Swiss Franc",
+    "code": "CHF"
+  },
+  {
+    "id": 5,
+    "name": "Japanese Yen",
+    "code": "JPY"
+  },
+  {
+    "id": 6,
+    "name": "Australian Dollar",
+    "code": "AUD"
+  },
+  {
+    "id": "1745873222481",
+    "name": "US Dollar",
+    "code": "USD"
+  }
+]
