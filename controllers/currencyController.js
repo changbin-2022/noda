@@ -17,8 +17,14 @@ class CurrencyController {
       const { currencyId, startDate, endDate } = req.query;
       const rates = await currencyService.getCurrencyRates(currencyId, startDate, endDate);
       console.log('Currency rates:', rates);
+
       const currencies = await currencyService.getCurrencies();
-      res.render('currency', { currencies, rates });
+      const selectedCurrency = currencies.find(c => parseInt(c.id) === parseInt(currencyId));
+      const currencyName = selectedCurrency
+      ? `${selectedCurrency.name} (${selectedCurrency.code})`
+      : 'Невідома валюта';
+
+      res.render('currency', { currencies, rates, currencyName });
     } catch (error) {
       console.error('Error loading currency history:', error);
       res.status(500).send('Server error');

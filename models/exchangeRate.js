@@ -1,8 +1,9 @@
 class ExchangeRate {
-    constructor(currencyId, date, rate) {
+    constructor(currencyId, date, buy, sell) {
       this.currencyId = currencyId;
       this.date = date; 
-      this.rate = rate; 
+      this.buy = buy; 
+      this.sell = sell; 
     }
   }
   

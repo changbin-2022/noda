@@ -11,14 +11,16 @@
   <table border="1">
     <tr>
       <th>Валюта</th>
-      <th>Курс</th>
+      <th>Купівля</th>
+      <th>Продаж</th>
     </tr>
     <% rates.forEach(rate => { 
          const currency = currencies.find(c => c.id === rate.currencyId);
     %>
       <tr>
         <td><%= currency ? currency.name : 'Unknown' %> (<%= currency ? currency.code : '' %>)</td>
-        <td><%= rate.rate %></td>
+        <td><%= rate.buy %></td>
+        <td><%= rate.sell %></td>
       </tr>
     <% }) %>
   </table>

@@ -26,8 +26,8 @@ class AdminController {
   }
 
   async createRate(req, res) {
-    const { currencyId, date, rate } = req.body;
-    await currencyService.addOrUpdateExchangeRate(currencyId, date, rate);
+    const { currencyId, date, buy, sell } = req.body;
+    await currencyService.addOrUpdateExchangeRate(currencyId, date, buy, sell);
     res.redirect('/admin');
   }
 }

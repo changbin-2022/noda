@@ -33,8 +33,8 @@ class CurrencyService {
     await currencyRepository.deleteCurrency(currencyId);
   }
 
-  async addOrUpdateExchangeRate(currencyId, date, rateValue) {
-    await currencyRepository.addExchangeRate(currencyId, date, rateValue);
+  async addOrUpdateExchangeRate(currencyId, date, buyValue, sellValue) {
+    await currencyRepository.addExchangeRate(currencyId, date, buyValue, sellValue);
   }
 }
 

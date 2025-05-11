@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const Currency = require('../models/currency');
 const ExchangeRate = require('../models/exchangeRate');
@@ -22,7 +23,7 @@ class CurrencyRepository {
   // асинхронний ввід-вивід з використанням async/await
   async getAllExchangeRatesAsync() {
     const data = await fs.promises.readFile(ratesPath, 'utf-8');
-    return JSON.parse(data).map(r => new ExchangeRate(r.currencyId, r.date, r.rate));
+    return JSON.parse(data).map(r => new ExchangeRate(r.currencyId, r.date, r.buy, r.sell));
   }
 
   // синхронний ввід-вивід
@@ -89,9 +90,9 @@ class CurrencyRepository {
   }
 
   // асинхронний ввід-вивід з використанням async/await
-  async addExchangeRate(currencyId, date, rate) {
+  async addExchangeRate(currencyId, date, buy, sell) {
     const rates = await this.getAllExchangeRatesAsync();
-    rates.push(new ExchangeRate(parseInt(currencyId), date, parseFloat(rate)));
+    rates.push(new ExchangeRate(parseInt(currencyId), date, parseFloat(buy), parseFloat(sell)));
     await fs.promises.writeFile(ratesPath, JSON.stringify(rates, null, 2));
   }
 }
