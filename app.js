@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const { connectToDb, getPool } = require('./db');
 const currencyController = require('./controllers/currencyController');
 
 const app = express();
@@ -16,6 +17,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/', (req, res) => currencyController.showHome(req, res));
 app.get('/currency', (req, res) => currencyController.showCurrencyHistory(req, res));
 
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+connectToDb();
