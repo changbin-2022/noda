@@ -7,7 +7,7 @@ const currenciesPath = path.join(__dirname, '../data/currencies.json');
 const ratesPath = path.join(__dirname, '../data/exchangeRates.json');
 
 class CurrencyRepository {
-// асинхронний ввід-вивід з використанням promise
+// асинхронне отримання всіх валют з використанням Promise
   getAllCurrenciesPromise() {
     return new Promise((resolve, reject) => {
       fs.readFile(currenciesPath, 'utf-8', (err, data) => {
@@ -20,13 +20,13 @@ class CurrencyRepository {
     });
   }
 
-  // асинхронний ввід-вивід з використанням async/await
+  // асинхронне отримання всіх обмінних курсів з використанням async/await
   async getAllExchangeRatesAsync() {
     const data = await fs.promises.readFile(ratesPath, 'utf-8');
     return JSON.parse(data).map(r => new ExchangeRate(r.currencyId, r.date, r.buy, r.sell));
   }
 
-  // синхронний ввід-вивід
+  // синхронне додавання нової валюти
   addCurrency(name, code) {
     const data = fs.readFileSync(currenciesPath, 'utf-8'); // синхронне читання
     const currencies = JSON.parse(data);
@@ -35,9 +35,9 @@ class CurrencyRepository {
     fs.writeFileSync(currenciesPath, JSON.stringify(currencies, null, 2)); // синхронний запис
   }
 
-  // асинхронний ввід-вивід з використанням async/await + проміс
+  // оновлення валюти з використанням async/await та Promise
   async updateCurrency(id, name, code) {
-    const currencies = await this.getAllCurrenciesPromise(); // проміс
+    const currencies = await this.getAllCurrenciesPromise();
     const index = currencies.findIndex(c => parseInt(c.id) === parseInt(id));
     if (index !== -1) {
       currencies[index].name = name;
@@ -46,7 +46,7 @@ class CurrencyRepository {
     }
   }
 
-  // асинхронний ввід-вивід з використанням callback
+  // видалення обмінного курсу з використанням callback
   deleteExchangeRate(currencyId, callback) {
     fs.readFile(ratesPath, 'utf-8', (readErr, data) => { // callback
       if (readErr) {
@@ -72,9 +72,10 @@ class CurrencyRepository {
     });
   }
 
-  // асинхронний ввід-вивід з використанням async/await + проміс + callback
+  // видалення валюти з використанням async/await, Promise та callback
   async deleteCurrency(id) {
-    let currencies = await this.getAllCurrenciesPromise(); // проміс
+    // отримуємо всі валюти через проміс
+    let currencies = await this.getAllCurrenciesPromise(); 
     currencies = currencies.filter(c => parseInt(c.id) !== parseInt(id));
 
     await new Promise((resolve, reject) => {
@@ -89,7 +90,7 @@ class CurrencyRepository {
     await fs.promises.writeFile(currenciesPath, JSON.stringify(currencies, null, 2)); // async/await
   }
 
-  // асинхронний ввід-вивід з використанням async/await
+  // додавання нового обмінного курсу з використанням async/await
   async addExchangeRate(currencyId, date, buy, sell) {
     const rates = await this.getAllExchangeRatesAsync();
     rates.push(new ExchangeRate(parseInt(currencyId), date, parseFloat(buy), parseFloat(sell)));

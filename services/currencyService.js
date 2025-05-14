@@ -1,6 +1,7 @@
 const currencyRepository = require('../repositories/currencyRepository');
 
 class CurrencyService {
+  // знаходження найактуальніших курсів для кожної валюти
   async getTodayRates() {
     const rates = await currencyRepository.getAllExchangeRatesAsync();
     const today = new Date().toISOString().split('T')[0];
@@ -20,6 +21,7 @@ class CurrencyService {
     return closestRates;
   }
 
+  // фільтрує курси за періодом для конкртеної валюти
   async getCurrencyRates(currencyId, startDate, endDate) {
     const rates = await currencyRepository.getAllExchangeRatesAsync();
     const filteredRates = rates.filter(rate => 
