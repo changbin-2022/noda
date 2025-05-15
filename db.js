@@ -1,15 +1,24 @@
 const sql = require('mssql');
 
+
 const config = {
-  user: '',
-  password: '',
-  server: '',
+  server: 'localhost',
   database: 'ExchangeRate',
   options: {
-      encrypt: false,
-      trustServerCertificate: true
+    encrypt: false,
+    trustServerCertificate: true
+  },
+  authentication: {
+    type: 'ntlm',
+    options: {
+      domain: 'DESKTOP-ALGL9A7',
+      userName: 'oksana',
+      password: '1832'
+    }
   }
 };
+
+
 
 let pool;
 
