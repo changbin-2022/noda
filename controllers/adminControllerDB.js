@@ -1,6 +1,6 @@
-const currencyService = require("../services/currencyService");
+const currencyService = require("../services/currencyServiceDB");
 
-class AdminController {
+class AdminControllerDB {
   async showAdminPage(req, res) {
     const currencies = await currencyService.getCurrencies();
     res.render("admin", { currencies });
@@ -32,4 +32,4 @@ class AdminController {
   }
 }
 
-module.exports = new AdminController();
+module.exports = new AdminControllerDB();
