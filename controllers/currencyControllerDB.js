@@ -2,30 +2,13 @@ const { Currency } = require("../models/sequelizeModels");
 const currencyService = require("../services/currencyServiceDB");
 
 class CurrencyControllerDB {
-  // async showHome(req, res) {
-  //   try {
-  //     const rates = await currencyService.getTodayRates();
-  //     const currencies = await currencyService.getCurrencies();
-  //     res.render("index", { currencies, rates });
-  //   } catch (error) {
-  //     console.error("Error loading currency history:", error);
-  //     res.status(500).send("Server error");
-  //   }
-  // }
   async showHome(req, res) {
     try {
-      // Отримати сьогоднішні курси валют (наприклад, останні доступні дані)
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-      const rates = await ExchangeRate.findAll({
-        where: { date: today },
-        include: [{ model: Currency, as: "currency" }],
-      });
-
-      const currencies = await Currency.findAll();
-
-      res.render('index', { currencies, rates });
+      const rates = await currencyService.getTodayRates();
+      const currencies = await currencyService.getCurrencies();
+      res.render("index", { currencies, rates });
     } catch (error) {
-      console.log('Error loading currency history:', error);
+      console.error("Error loading currency history:", error);
       res.status(500).send("Server error");
     }
   }
