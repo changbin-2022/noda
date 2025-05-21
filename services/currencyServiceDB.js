@@ -1,11 +1,25 @@
 const currencyRepositoryDB = require("../repositories/currencyRepositoryDB");
 
 class CurrencyServiceDB {
-  async getTodayRates() {
+    async getTodayRates() {
     const rates = await currencyRepositoryDB.getAllExchangeRates();
-    const today = new Date().toISOString().split("T")[0];
-    return rates.filter(rate => rate.date === today);
+    const today = new Date().toISOString().split('T')[0];
+    const todayDate = new Date(today);
+
+    const closestRates = Object.values(
+        rates.reduce((acc, rate) => {
+            if (!acc[rate.currencyId] || 
+                Math.abs(new Date(rate.date) - todayDate) < 
+                Math.abs(new Date(acc[rate.currencyId].date) - todayDate)) {
+                acc[rate.currencyId] = rate;
+            }
+            return acc;
+        }, {})
+    );
+
+    return closestRates;
   }
+
 
   async getCurrencyRates(currencyId, startDate, endDate) {
     const rates = await currencyRepositoryDB.getAllExchangeRates();
