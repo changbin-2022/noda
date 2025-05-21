@@ -11,10 +11,10 @@ class CurrencyServiceDB {
     const rates = await currencyRepositoryDB.getAllExchangeRates();
 
     const filteredRates = rates.filter(rate =>
-      rate.currencyId === parseInt(currencyId) &&
-      rate.date >= startDate &&
-      rate.date <= endDate
-    );
+    rate.currencyId === parseInt(currencyId) &&
+    new Date(rate.date) >= new Date(startDate) &&
+    new Date(rate.date) <= new Date(endDate));
+
 
     return filteredRates.sort((a, b) => new Date(a.date) - new Date(b.date));
   }
