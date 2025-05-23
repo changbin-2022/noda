@@ -41,10 +41,12 @@ class CurrencyRepositoryDB {
         throw new Error(`Currency with code "${code}" already exists.`);
       }
 
-      const maxIdResult = await request.query("SELECT MAX(id) AS maxId FROM Currencies");
+      const idRequest = new sql.Request(transaction);
+      const maxIdResult = await idRequest.query("SELECT MAX(id) AS maxId FROM Currencies");
       const newId = (maxIdResult.recordset[0].maxId || 0) + 1;
 
-      await request
+      const insertRequest = new sql.Request(transaction);
+      await insertRequest
         .input("id", sql.Int, newId)
         .input("name", sql.VarChar(100), name)
         .input("code", sql.VarChar(10), code)

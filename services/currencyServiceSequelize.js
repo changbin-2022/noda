@@ -1,79 +1,74 @@
-const currencyRepositorySequelize = require("../repositories/currencyRepositorySequelize");
+const currencyRepository = require("../repositories/currencyRepositorySequelize");
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toISOString().split("T")[0]; // формат: 2025-05-16
-}
-
-class CurrencyServiceDB {
+class CurrencyService {
+  // Отримати найсвіжіші курси по кожній валюті (найближчі до сьогоднішньої дати)
   async getTodayRates() {
-    const rates = await currencyRepositorySequelize.getAllExchangeRates();
-    const today = new Date().toISOString().split("T")[0];
-    const todayDate = new Date(today);
+    const rates = await currencyRepository.getAllExchangeRates();
+    const todayDate = new Date();
 
     const closestRates = Object.values(
       rates.reduce((acc, rate) => {
+        const rateDate = new Date(rate.date);
         if (
           !acc[rate.currencyId] ||
-          Math.abs(new Date(rate.date) - todayDate) <
-            Math.abs(new Date(acc[rate.currencyId].date) - todayDate)
+          Math.abs(rateDate - todayDate) < Math.abs(new Date(acc[rate.currencyId].date) - todayDate)
         ) {
           acc[rate.currencyId] = rate;
         }
         return acc;
       }, {})
     );
-    return closestRates;
+
+    return closestRates.map(rate => ({
+      id: rate.id,
+      currencyId: rate.currencyId,
+      date: rate.date.toISOString().split('T')[0],
+      buy: rate.buy,
+      sell: rate.sell,
+    }));
   }
 
+  // Отримати курси для конкретної валюти за діапазон дат
   async getCurrencyRates(currencyId, startDate, endDate) {
-    const rates = await currencyRepositorySequelize.getAllExchangeRates();
-
-    // Перетворення дат
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const filteredRates = rates.filter((rate) => {
-      const rateDate = new Date(rate.date);
-      return (
+    const allRates = await currencyRepository.getAllExchangeRates();
+    const filtered = allRates
+      .filter(rate =>
         rate.currencyId === parseInt(currencyId) &&
-        rateDate >= start &&
-        rateDate <= end
-      );
-    });
-
-    return filteredRates
-      .map((rate) => ({
-        ...rate,
-        date: formatDate(rate.date),
-      }))
+        new Date(rate.date) >= new Date(startDate) &&
+        new Date(rate.date) <= new Date(endDate)
+      )
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    return filtered.map(rate => ({
+      id: rate.id,
+      currencyId: rate.currencyId,
+      date: rate.date.toISOString().split('T')[0],
+      buy: rate.buy,
+      sell: rate.sell,
+    }));
   }
 
+  // CRUD: Валюта
   async getCurrencies() {
-    return await currencyRepositorySequelize.getAllCurrencies();
+    return await currencyRepository.getAllCurrencies();
   }
 
   async createCurrency(name, code) {
-    await currencyRepositorySequelize.addCurrency(name, code);
+    await currencyRepository.addCurrency(name, code);
   }
 
   async updateCurrency(currencyId, newName, newCode) {
-    await currencyRepositorySequelize.updateCurrency(currencyId, newName, newCode);
+    await currencyRepository.updateCurrency(currencyId, newName, newCode);
   }
 
   async deleteCurrency(currencyId) {
-    await currencyRepositorySequelize.deleteCurrency(currencyId);
+    await currencyRepository.deleteCurrency(currencyId);
   }
 
+  // Додати/оновити курс
   async addOrUpdateExchangeRate(currencyId, date, buyValue, sellValue) {
-    await currencyRepositorySequelize.addOrUpdateExchangeRate(
-      currencyId,
-      date,
-      buyValue,
-      sellValue
-    );
+    await currencyRepository.addOrUpdateExchangeRate(currencyId, date, buyValue, sellValue);
   }
 }
 
-module.exports = new CurrencyServiceDB();
+module.exports = new CurrencyService();

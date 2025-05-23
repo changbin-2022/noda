@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/adminControllerDB");
-const currencyController = require("../controllers/currencyControllerDB");
+// const adminController = require("../controllers/adminControllerDB");
+// const currencyController = require("../controllers/currencyControllerDB");
+
+const adminController = require("../controllers/adminControllerSequelize");
+const currencyController = require("../controllers/currencyControllerSequelize");
 
 router.get("/", adminController.showAdminPage);
 

@@ -1,7 +1,28 @@
-const { Currency, ExchangeRate } = require("../models/sequelizeModels");
+const { Currency, ExchangeRate } = require('../models/sequelizeModels');
+const sequelize = require('../dbSequelize');
 
-class currencyRepositorySequelize {
-  // Отримати всі валюти (read)
+class CurrencyRepositorySequelize {
+  // CREATE
+  async addCurrency(name, code) {
+    const t = await sequelize.transaction();
+    try {
+      const existing = await Currency.findOne({ where: { code }, transaction: t });
+      if (existing) throw new Error(`Currency with code "${code}" already exists.`);
+
+      const maxId = await Currency.max('id', { transaction: t }) || 0;
+      const newCurrency = await Currency.create({ id: maxId + 1, name, code }, { transaction: t });
+
+      await t.commit();
+      console.log(`Currency "${name}" added with Id = ${newCurrency.id}`);
+      return newCurrency;
+    } catch (error) {
+      await t.rollback();
+      console.error("Error adding currency: ", error);
+      throw error;
+    }
+  }
+
+  // READ
   async getAllCurrencies() {
     try {
       return await Currency.findAll();
@@ -11,87 +32,70 @@ class currencyRepositorySequelize {
     }
   }
 
-  // Отримати всі курси валют (read)
-  async getAllExchangeRates() {
-    try {
-      return await ExchangeRate.findAll();
-    } catch (error) {
-      console.error("Error getting all exchange rates: ", error);
-      return [];
-    }
-  }
-
-  // Додати нову валюту (create)
-  async addCurrency(name, code) {
-    try {
-      // Перевірка на унікальність коду валюти
-      const existing = await Currency.findOne({ where: { code } });
-      if (existing) {
-        throw new Error(`Currency with code "${code}" already exists.`);
-      }
-      const currency = await Currency.create({ name, code });
-      console.log(`Currency "${name}" added, Id = "${currency.id}"`);
-      return currency;
-    } catch (error) {
-      console.error("Error adding currency: ", error);
-      throw error;
-    }
-  }
-
-  // Оновлення валюти (update)
+  // UPDATE
   async updateCurrency(id, name, code) {
+    const t = await sequelize.transaction();
     try {
-      const currency = await Currency.findByPk(id);
-      if (!currency) throw new Error("Currency not found");
-      currency.name = name;
-      currency.code = code;
-      await currency.save();
+      const currency = await Currency.findByPk(id, { transaction: t });
+      if (!currency) throw new Error(`Currency with id=${id} not found.`);
+
+      await currency.update({ name, code }, { transaction: t });
+      await t.commit();
+      console.log(`Currency with Id = ${id} updated.`);
     } catch (error) {
+      await t.rollback();
       console.error("Error updating currency: ", error);
       throw error;
     }
   }
 
-  // Видалення валюти (delete) разом з курсами — через транзакцію
+  // DELETE
   async deleteCurrency(id) {
-    const sequelize = Currency.sequelize;
-    const transaction = await sequelize.transaction();
+    const t = await sequelize.transaction();
     try {
-      await ExchangeRate.destroy({ where: { currencyId: id }, transaction });
-      await Currency.destroy({ where: { id }, transaction });
-      await transaction.commit();
+      await ExchangeRate.destroy({ where: { currencyId: id }, transaction: t });
+      await Currency.destroy({ where: { id }, transaction: t });
+
+      await t.commit();
+      console.log(`Currency with Id = ${id} and related exchange rates deleted.`);
     } catch (error) {
-      await transaction.rollback();
-      console.error("Error deleting currency and related exchange rates:", error);
+      await t.rollback();
+      console.error("Error deleting currency and related exchange rates: ", error);
       throw error;
     }
   }
-
-  // Додавання або оновлення курсу валюти
   async addOrUpdateExchangeRate(currencyId, date, buy, sell) {
+    const t = await sequelize.transaction();
     try {
-      let rate = await ExchangeRate.findOne({
+      const existing = await ExchangeRate.findOne({
         where: { currencyId, date },
+        transaction: t,
       });
 
-      if (rate) {
-        rate.buy = buy;
-        rate.sell = sell;
-        await rate.save();
-        console.log(
-          `Exchange rate updated for currencyId=${currencyId} on ${date}`
-        );
+      if (existing) {
+        await existing.update({ buy, sell }, { transaction: t });
+        console.log(`Exchange rate updated for currencyId=${currencyId} on ${date}`);
       } else {
-        await ExchangeRate.create({ currencyId, date, buy, sell });
-        console.log(
-          `Exchange rate inserted for currencyId=${currencyId} on ${date}`
-        );
+        await ExchangeRate.create({ currencyId, date, buy, sell }, { transaction: t });
+        console.log(`Exchange rate inserted for currencyId=${currencyId} on ${date}`);
       }
+
+      await t.commit();
     } catch (error) {
+      await t.rollback();
       console.error("Error in addOrUpdateExchangeRate: ", error);
       throw error;
     }
   }
+
+  async getAllExchangeRates() {
+    try {
+      return await ExchangeRate.findAll({ include: Currency });
+    } catch (error) {
+      console.error("Error getting all exchange rates: ", error);
+      return [];
+    }
+  }
 }
 
-module.exports = new currencyRepositorySequelize();
+module.exports = new CurrencyRepositorySequelize();
