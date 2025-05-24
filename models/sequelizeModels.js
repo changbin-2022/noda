@@ -46,5 +46,17 @@ const ExchangeRate = sequelize.define('exchangeRate', {
         timestamps: false
 });
 
+//багато до одного
+ExchangeRate.belongsTo(Currency, {
+  foreignKey: 'currencyId',
+  as: 'currency'            
+});
+
+//один до багатьох
+Currency.hasMany(ExchangeRate, {
+  foreignKey: 'currencyId',
+  as: 'exchangeRates'      
+});
+
 module.exports = { Currency, ExchangeRate };
 

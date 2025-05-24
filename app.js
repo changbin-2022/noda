@@ -2,8 +2,6 @@ const express = require("express");
 const path = require("path");
 const sequelize = require ('./dbSequelize')
 const { Currency, ExchangeRate } = require('./models/sequelizeModels')
-Currency.hasMany(ExchangeRate, { foreignKey: 'currencyId', as: 'exchangeRates' });
-ExchangeRate.belongsTo(Currency, { foreignKey: 'currencyId', as: 'currency' });
 // const { connectToDb, getPool } = require("./db");
 // const currencyController = require("./controllers/currencyControllerDB");
 const CurrencyControllerSequelize = require("./controllers/currencyControllerSequelize");

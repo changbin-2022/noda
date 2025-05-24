@@ -22,7 +22,7 @@ class CurrencyService {
     return closestRates.map(rate => ({
       id: rate.id,
       currencyId: rate.currencyId,
-      date: rate.date.toISOString().split('T')[0],
+      date: rate.date,  
       buy: rate.buy,
       sell: rate.sell,
     }));
@@ -42,13 +42,13 @@ class CurrencyService {
     return filtered.map(rate => ({
       id: rate.id,
       currencyId: rate.currencyId,
-      date: rate.date.toISOString().split('T')[0],
+      date: rate.date,  
       buy: rate.buy,
       sell: rate.sell,
     }));
   }
 
-  // CRUD: Валюта
+  // CRUD
   async getCurrencies() {
     return await currencyRepository.getAllCurrencies();
   }

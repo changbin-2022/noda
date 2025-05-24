@@ -1,7 +1,6 @@
 const currencyService = require("../services/currencyServiceSequelize");
 
 class AdminControllerSequelize {
-  // Вивід адмін-сторінки
   async showAdminPage(req, res) {
     try {
       const currencies = await currencyService.getCurrencies();
@@ -12,7 +11,6 @@ class AdminControllerSequelize {
     }
   }
 
-  // Створення нової валюти (транзакційно)
   async createCurrency(req, res) {
     const { name, code } = req.body;
     try {
@@ -24,7 +22,6 @@ class AdminControllerSequelize {
     }
   }
 
-  // Оновлення валюти (транзакційно)
   async updateCurrency(req, res) {
     const { id } = req.params;
     const { name, code } = req.body;
@@ -37,7 +34,6 @@ class AdminControllerSequelize {
     }
   }
 
-  // Видалення валюти (транзакційно)
   async deleteCurrency(req, res) {
     const { id } = req.params;
     try {
@@ -48,7 +44,7 @@ class AdminControllerSequelize {
       res.status(500).send("Помилка при видаленні валюти");
     }
   }
-  // Створення нового курсу (транзакційно)
+  
   async createRate(req, res) {
   const { currencyId, date, buy, sell } = req.body;
 

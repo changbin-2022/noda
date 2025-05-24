@@ -4,6 +4,7 @@ const Currency = require("../models/currency");
 const ExchangeRate = require("../models/exchangeRate");
 
 class CurrencyRepositoryDB {
+  // отримати всі валюти з бази
   async getAllCurrencies() {
     const pool = getPool();
     try {
@@ -15,6 +16,7 @@ class CurrencyRepositoryDB {
     }
   }
 
+  // отримати всі курси валют з бази
   async getAllExchangeRates() {
     const pool = getPool();
     try {
@@ -26,6 +28,7 @@ class CurrencyRepositoryDB {
     }
   }
 
+  // додати нову валюту (транзакційно)
   async addCurrency(name, code) {
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
@@ -61,6 +64,7 @@ class CurrencyRepositoryDB {
     }
   }
 
+  // оновити існуючу валюту за id (транзакційно)
   async updateCurrency(id, name, code) {
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
@@ -85,6 +89,7 @@ class CurrencyRepositoryDB {
     }
   }
 
+  // видалити валюту та всі пов’язані курси валют (транзакційно)
   async deleteCurrency(id) {
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
@@ -109,6 +114,7 @@ class CurrencyRepositoryDB {
     }
   }
 
+  // додати або оновити курс валюти на певну дату (транзакційно)
   async addOrUpdateExchangeRate(currencyId, date, buy, sell) {
     const pool = getPool();
     const transaction = new sql.Transaction(pool);

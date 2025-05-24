@@ -2,7 +2,7 @@ const { Currency, ExchangeRate } = require('../models/sequelizeModels');
 const sequelize = require('../dbSequelize');
 
 class CurrencyRepositorySequelize {
-  // CREATE
+  // отримати всі валюти з бази
   async addCurrency(name, code) {
     const t = await sequelize.transaction();
     try {
@@ -22,7 +22,7 @@ class CurrencyRepositorySequelize {
     }
   }
 
-  // READ
+  // отримати всі курси валют з бази
   async getAllCurrencies() {
     try {
       return await Currency.findAll();
@@ -32,7 +32,8 @@ class CurrencyRepositorySequelize {
     }
   }
 
-  // UPDATE
+  
+  // оновити валюту за id (транзакційно)
   async updateCurrency(id, name, code) {
     const t = await sequelize.transaction();
     try {
@@ -49,7 +50,7 @@ class CurrencyRepositorySequelize {
     }
   }
 
-  // DELETE
+  // видалити валюту та всі пов’язані курси валют (транзакційно)
   async deleteCurrency(id) {
     const t = await sequelize.transaction();
     try {
@@ -64,6 +65,8 @@ class CurrencyRepositorySequelize {
       throw error;
     }
   }
+
+  // додати або оновити курс валюти на певну дату (транзакційно)
   async addOrUpdateExchangeRate(currencyId, date, buy, sell) {
     const t = await sequelize.transaction();
     try {
@@ -88,9 +91,15 @@ class CurrencyRepositorySequelize {
     }
   }
 
+  // отримати всі курси валют з пов’язаною валютою
   async getAllExchangeRates() {
     try {
-      return await ExchangeRate.findAll({ include: Currency });
+      return await ExchangeRate.findAll({
+        include: {
+          model: Currency,
+          as: 'currency'
+        }
+      });
     } catch (error) {
       console.error("Error getting all exchange rates: ", error);
       return [];

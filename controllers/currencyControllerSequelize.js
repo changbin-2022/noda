@@ -1,7 +1,6 @@
 const currencyService = require("../services/currencyServiceSequelize");
 
 class CurrencyControllerSequelize {
-  // Головна сторінка — список валют і найсвіжіші курси
   async showHome(req, res) {
     try {
       const rates = await currencyService.getTodayRates();
@@ -13,7 +12,6 @@ class CurrencyControllerSequelize {
     }
   }
 
-  // Сторінка історії валюти
   async showCurrencyHistory(req, res) {
     try {
       const { currencyId, startDate, endDate } = req.query;
@@ -34,7 +32,6 @@ class CurrencyControllerSequelize {
     }
   }
 
-  // Адмін-сторінка
   async showAdminPage(req, res) {
     try {
       const currencies = await currencyService.getCurrencies();
