@@ -67,3 +67,41 @@ sequelize
   .catch((err) =>
     console.log(`${colors.red}Sequelize sync error:${colors.reset}`, err)
   );
+
+
+
+
+
+
+
+//app.js for 4-th lab
+
+
+/*const express = require("express");
+const path = require("path");
+const { connectToDb } = require("./db");
+const CurrencyControllerDB = require("./controllers/currencyControllerDB");
+const adminRouter = require("./routes/adminRouter");
+
+const app = express();
+const PORT = 3000;
+
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Роутинг
+app.use("/admin", adminRouter);
+app.get("/", (req, res) => CurrencyControllerDB.showHome(req, res));
+app.get("/currency", (req, res) =>
+  CurrencyControllerDB.showCurrencyHistory(req, res)
+);
+
+// Підключення до БД і запуск
+connectToDb(); // встановлює pool
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
+*/
