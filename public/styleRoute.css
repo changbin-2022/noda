@@ -1,0 +1,47 @@
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.header-row h2 {
+  margin: 0;
+}
+
+.back-link {
+  position: absolute;
+  left: 0;
+  text-decoration: none;
+  font-size: 14px;
+  color: #333;
+  padding: 10px 10px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #584ae3;
+}
+
+@media (max-width: 840px) {
+  .header-row {
+    flex-direction: column;
+    align-items: stretch; 
+    text-align: center;   
+  }
+
+  .back-link {
+    position: static;
+    align-self: flex-start; 
+    margin-bottom: 8px;
+    font-size: 14px;
+    padding-left: 10px;
+    text-align: left;
+  }
+
+  .header-row h2 {
+    margin: 0;
+    text-align: center; 
+  }
+}

@@ -1,0 +1,205 @@
+.collapsible h3 {
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 0;
+  transition: background-color 0.3s ease;
+}
+
+.collapsible .contentAdmin {
+  display: none;
+  padding: 0 1rem;
+}
+
+.collapsible.active .contentAdmin {
+  display: block;
+  padding: 20px 0;
+}
+
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.collapsible-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.collapsible-header .arrow {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.collapsible-header:hover {
+  background-color: #e0e0e0;
+}
+
+.contentAdmin > table{
+    margin: 10px auto;
+}
+
+.button-update,
+.button-delete {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin: 0 5px;
+}
+
+.button-update:hover {
+  background-color: #584ae3;
+}
+
+.button-delete {
+  background-color: #e74c3c;
+}
+
+.button-delete:hover {
+  background-color: #c0392b;
+}
+
+.contentAdmin form {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  column-gap: 16px;
+  row-gap: 12px;
+  align-items: center;
+  justify-content: center;
+  max-width: 720px;
+  margin: 0 auto 20px auto;
+}
+
+.contentAdmin form label {
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 8px;
+  font-weight: 600;
+}
+
+.contentAdmin form button {
+  grid-column: 1 / -1;  
+  justify-self: center;  
+  padding: 10px 24px;
+  max-width: max-content;
+  margin-top: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #6c63ff;
+  outline: none;
+}
+
+
+@media (max-width: 840px) {
+    .contentAdmin form {
+        max-width: 100%;
+        padding: 0 10px;
+        grid-template-columns: 120px 1fr;
+        column-gap: 8px;
+    }
+
+    .contentAdmin form label {
+        text-align: left;
+        white-space: normal;
+        padding-right: 0;
+        font-weight: 600;
+        font-size: 13px; 
+    }
+
+    .contentAdmin tbody form button {
+        padding: 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+        max-width: 100%;
+        width: 100%;
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead th:nth-child(1) { 
+        width: 40%;
+        font-weight: 700;
+        font-size: 12px;
+        text-align: left;
+        padding-left: 8px;
+    }
+
+    thead th:nth-child(2) {  
+        width: 30%;
+        font-weight: 700;
+        font-size: 12px;
+        text-align: left;
+        padding-left: 8px;
+    }
+
+    tbody td:nth-child(1) input,
+    tbody td:nth-child(2) input {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+    
+    table tbody tr td:last-child {
+        width: 80px; 
+        padding: 4px 8px;
+    }
+
+    .button-update,
+    .button-delete {
+        position: relative;
+        color: transparent; 
+        padding: 0; 
+        font-size: 12px;
+        min-width: 50px;
+        height: 28px; 
+        overflow: visible;
+    }
+
+    .button-update::after,
+    .button-delete::after {
+        content: attr(data-short);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+}

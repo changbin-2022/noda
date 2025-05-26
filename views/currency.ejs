@@ -1,29 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Історія курсу валют</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/styleRoute.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    .currency-table {
+      width: 60%;
+      max-width: 100%;
+      margin: 30px auto 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>Історія курсу валюти: <%= currencyName %></h1>
-  
-  <h2>Результати</h2>
-  <table border="1">
-    <tr>
-      <th>Дата</th>
-      <th>Купівля</th>
-      <th>Продаж</th>
-    </tr>
-    <% rates.forEach(rate => { %>
-      <tr>
-        <td><%= rate.date %></td>
-        <td><%= rate.buy %></td>
-        <td><%= rate.sell %></td>
-      </tr>
-    <% }) %>
-  </table>
+  <div class="container">
+    <h1>Курс валют</h1>
+    <div class="header-row">
+      <a href="/" class="back-link">← Назад на головну</a>
+      <h2>Історія курсу валюти: <%= currencyName %></h2>
+    </div>
 
-  <br><a href="/">Повернутись на головну сторінку</a>
+    <% if (rates.length > 0) { %>
+      <table class="currency-table">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Купівля</th>
+            <th>Продаж</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rates.forEach(rate => { %>
+            <tr>
+              <td><%= rate.date %></td>
+              <td><%= rate.buy %></td>
+              <td><%= rate.sell %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p style="text-align: center; font-size: 16px; margin-top: 30px;">
+        Дані про курс цієї валюти відсутні.
+      </p>
+    <% } %>
+
+  </div>
 </body>
-</html>
+</html> 
