@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Історія курсу валюти</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<h1 id="pageTitle">Історія курсу</h1>
+
+<table>
+    <thead>
+    <tr><th>Дата</th><th>Купівля</th><th>Продаж</th></tr>
+    </thead>
+    <tbody id="historyTbody"></tbody>
+</table>
+
+<br>
+<a href="/">На головну</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const params = new URLSearchParams(window.location.search);
+        const currencyId = params.get('currencyId');
+        const startDate  = params.get('startDate');
+        const endDate    = params.get('endDate');
+
+        const res = await fetch(
+            `/admin/api/currency-history?currencyId=${currencyId}` +
+            `&startDate=${startDate}&endDate=${endDate}`
+        );
+        if (!res.ok) return alert('Не вдалося завантажити історію');
+        const { rates, currencyName } = await res.json();
+
+        // set page title
+        document.getElementById('pageTitle').textContent =
+            `Історія для ${currencyName}`;
+
+        // fill table
+        const tbody = document.getElementById('historyTbody');
+        tbody.innerHTML = '';
+        rates.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+          <td>${r.date}</td>
+          <td>${r.buy}</td>
+          <td>${r.sell}</td>`;
+            tbody.appendChild(tr);
+        });
+    });
+</script>
+</body>
+</html>

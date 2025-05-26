@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Адмін-панель</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<h1>Адмін-панель</h1>
+
+<!-- CREATE CURRENCY -->
+<section>
+    <h2>Додати нову валюту</h2>
+    <form id="createCurrencyForm">
+        <label>Назва валюти:
+            <input type="text" name="name" required>
+        </label>
+        <label>Код валюти:
+            <input type="text" name="code" required>
+        </label>
+        <button>Додати валюту</button>
+    </form>
+</section>
+
+<hr>
+
+<!-- LIST + UPDATE + DELETE CURRENCIES -->
+<section>
+    <h2>Керування валютами</h2>
+    <table>
+        <thead>
+        <tr><th>Назва</th><th>Код</th><th>Дії</th></tr>
+        </thead>
+        <tbody id="currenciesTbody"></tbody>
+    </table>
+</section>
+
+<hr>
+
+<!-- CREATE RATE -->
+<section>
+    <h2>Додати курс</h2>
+    <form id="createRateForm">
+        <label>Валюта:
+            <select name="currencyId" id="currencySelect" required></select>
+        </label>
+        <label>Дата:
+            <input type="date" name="date" required>
+        </label>
+        <label>Купівля:
+            <input type="number" step="0.0001" name="buy" required>
+        </label>
+        <label>Продаж:
+            <input type="number" step="0.0001" name="sell" required>
+        </label>
+        <button>Додати курс</button>
+    </form>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tbody = document.getElementById('currenciesTbody');
+        const currencySelect = document.getElementById('currencySelect');
+
+        // load currencies for both table and rate‐form
+        async function loadCurrencies() {
+            const res = await fetch('/admin/api/currency');
+            if (!res.ok) return alert('Не вдалося завантажити валюти');
+            const currencies = await res.json();
+
+            // table
+            tbody.innerHTML = '';
+            currencies.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td><input class="name" data-id="${c.id}" value="${c.name}"></td>
+            <td><input class="code" data-id="${c.id}" value="${c.code}"></td>
+            <td>
+              <button class="update" data-id="${c.id}">Оновити</button>
+              <button class="delete" data-id="${c.id}">Видалити</button>
+            </td>`;
+                tbody.appendChild(tr);
+            });
+
+            // rate‐form select
+            currencySelect.innerHTML = '';
+            currencies.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} (${c.code})`;
+                currencySelect.appendChild(opt);
+            });
+        }
+
+        // CREATE currency
+        document.getElementById('createCurrencyForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const payload = Object.fromEntries(new FormData(e.target));
+            const res = await fetch('/admin/api/currency', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                const { error } = await res.json();
+                return alert(`Помилка: ${error}`);
+            }
+            e.target.reset();
+            await loadCurrencies();
+        });
+
+        // UPDATE / DELETE (delegation)
+        tbody.addEventListener('click', async e => {
+            const id = e.target.dataset.id;
+            if (e.target.matches('.update')) {
+                const row = e.target.closest('tr');
+                const name = row.querySelector('.name').value;
+                const code = row.querySelector('.code').value;
+                const res = await fetch(`/admin/api/currency/${id}`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ name, code })
+                });
+                if (!res.ok) {
+                    const { error } = await res.json();
+                    return alert(`Помилка: ${error}`);
+                }
+                await loadCurrencies();
+            }
+            if (e.target.matches('.delete')) {
+                if (!confirm('Видалити цю валюту?')) return;
+                const res = await fetch(`/admin/api/currency/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) {
+                    const { error } = await res.json();
+                    return alert(`Помилка: ${error}`);
+                }
+                await loadCurrencies();
+            }
+        });
+
+        // CREATE rate
+        document.getElementById('createRateForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const payload = Object.fromEntries(new FormData(e.target));
+            payload.buy = parseFloat(payload.buy);
+            payload.sell = parseFloat(payload.sell);
+            const res = await fetch('/admin/api/rate', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                const { error } = await res.json();
+                return alert(`Помилка: ${error}`);
+            }
+            alert('Курс додано');
+            e.target.reset();
+        });
+
+        loadCurrencies();
+    });
+</script>
+</body>
+</html>

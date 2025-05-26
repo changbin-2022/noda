@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Курси валют на сьогодні</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<h1>Курси валют на <span id="today"></span></h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Валюта</th>
+        <th>Купівля</th>
+        <th>Продаж</th>
+    </tr>
+    </thead>
+    <tbody id="todayRatesTbody"></tbody>
+</table>
+
+<hr>
+
+<h2>Перегляд історії курсу</h2>
+<form id="historyForm">
+    <label>Валюта:
+        <select id="curSelect" name="currencyId" required></select>
+    </label>
+    <label>Початкова дата:
+        <input type="date" name="startDate" required>
+    </label>
+    <label>Кінцева дата:
+        <input type="date" name="endDate" required>
+    </label>
+    <button>Переглянути історію</button>
+</form>
+
+<hr>
+<a href="/admin">Адмін-панель</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('today').textContent = new Date().toISOString().slice(0, 10);
+
+        // 1) fetch today's rates & all currencies
+        const currenciesPromise = fetch("/admin/api/currency?pageSize=1000000000")
+            .then(res => res.json())
+        const ratesPromise = fetch("/admin/api/latest-rates")
+            .then(res => res.json())
+        const [currencies, rates] = await Promise.all([currenciesPromise, ratesPromise]);
+
+        console.log(currencies, rates);
+        // 2) populate today's table
+        const tbody = document.getElementById('todayRatesTbody');
+        tbody.innerHTML = '';
+        rates.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+          <td>${r.currencyName} (${r.currencyCode})</td>
+          <td>${r.buy ?? "-"}</td>
+          <td>${r.sell ?? "-"}</td>`;
+            tbody.appendChild(tr);
+        });
+
+        // 3) fill currency select for history form
+        const select = document.getElementById('curSelect');
+        currencies.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.name} (${c.code})`;
+            select.appendChild(opt);
+        });
+
+        // 4) on submit → navigate to /currency view
+        document.getElementById('historyForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const qs = new URLSearchParams(new FormData(e.target)).toString();
+            window.location.href = `/currency?${qs}`;
+        });
+    });
+</script>
+</body>
+</html>
