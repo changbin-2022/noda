@@ -1,55 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Курси валют на сьогодні</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-  <h1>Курси валют на сьогодні</h1>
+  <div class="container">
+    <h1>Курс валют</h1>
 
-  <table border="1">
-    <tr>
-      <th>Валюта</th>
-      <th>Купівля</th>
-      <th>Продаж</th>
-    </tr>
-    <% rates.forEach(rate => { 
-         const currency = currencies.find(c => c.id === rate.currencyId);
-    %>
-      <tr>
-        <td><%= currency ? currency.name : 'Unknown' %> (<%= currency ? currency.code : '' %>)</td>
-        <td><%= rate.buy %></td>
-        <td><%= rate.sell %></td>
-      </tr>
-    <% }) %>
-  </table>
+    <main class="content">
+      <section class="rates">
+        <h2>Курси валют на сьогодні</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Валюта</th>
+              <th>Купівля</th>
+              <th>Продаж</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rates.forEach(rate => { 
+                 const currency = currencies.find(c => c.id === rate.currencyId);
+            %>
+              <tr>
+                <td><%= currency ? currency.name : 'Невідома' %> (<%= currency ? currency.code : '' %>)</td>
+                <td><%= rate.buy %></td>
+                <td><%= rate.sell %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
 
-  <hr>
+      <section class="history">
+        <h2>Перегляд історії курсу</h2>
+        <form action="/currency" method="get">
+          <label for="currencyId">Оберіть валюту:</label>
+          <select name="currencyId" id="currencyId" required>
+            <% currencies.forEach(currency => { %>
+              <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
+            <% }) %>
+          </select>
 
-  <h2>Перегляд історії курсу валюти</h2>
-  <form action="/currency" method="get">
-    <label for="currencyId">Оберіть валюту:</label>
-    <select name="currencyId" id="currencyId" required>
-      <% currencies.forEach(currency => { %>
-        <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
-      <% }) %>
-    </select>
-    <br><br>
+          <div class="date-range">
+            <div class="date-field">
+              <label for="startDate">Початкова дата:</label>
+              <input type="date" id="startDate" name="startDate" required>
+            </div>
+            <div class="date-field">
+              <label for="endDate">Кінцева дата:</label>
+              <input type="date" id="endDate" name="endDate" required>
+            </div>
+          </div>
 
-    <label for="startDate">Початкова дата:</label>
-    <input type="date" id="startDate" name="startDate" required>
-    <br>
-    <label for="endDate">Кінцева дата:</label>
-    <input type="date" id="endDate" name="endDate" required>
+          <button type="submit">Переглянути історію</button>
+        </form>
+      </section>
+    </main>
 
-    <br><br>
-    <button type="submit">Переглянути історію</button>
-  </form>
-
-  <hr>
-
-  <a href="/admin">Перейти в адмін-панель</a>
-
+    <footer>
+      <a class="admin-button" href="/admin">Перейти в адмін-панель</a>
+    </footer>
+  </div>
 </body>
 </html>

@@ -1,79 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Адмін-панель: Керування валютами та курсами</title>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8" />
+  <title>Адмін-панель</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/styleAdmin.css" />
+  <link rel="stylesheet" href="/styleRoute.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-  <h1>Адмін-панель</h1>
 
-  <h2>Додати нову валюту</h2>
-  <form action="/admin/currency/create" method="post">
-    <label for="name">Назва валюти:</label>
-    <input type="text" id="name" name="name" required>
+  <div class="container">
+    <h1>Курс валют</h1>
+    <div class="header-row">
+      <a href="/" class="back-link">← Назад на головну</a>
+      <h2>Адмін-панель</h2>
+    </div>
+
+    <section class="collapsible">
+      <div class="collapsible-header">
+        <h3>Додати нову валюту</h3>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="contentAdmin">
+        <form action="/admin/currency/create" method="post">
+          <label for="name">Назва валюти:</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="code">Код валюти:</label>
+          <input type="text" id="code" name="code" required>
+
+          <button type="submit">Додати валюту</button>
+        </form>
+      </div>
+    </section>
+
     <br>
-    <label for="code">Код валюти:</label>
-    <input type="text" id="code" name="code" required>
 
-    <button type="submit">Додати валюту</button>
-  </form>
+    <section class="collapsible">
+      <div class="collapsible-header">
+        <h3>Редагувати або видалити валюту</h3>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="contentAdmin">
+        <table>
+          <thead>
+            <tr>
+              <th>Назва</th>
+              <th>Код</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% currencies.forEach(currency => { %>
+              <tr>
+                <form action="/admin/currency/update/<%= currency.id %>" method="post">
+                  <td>
+                    <input type="text" name="name" value="<%= currency.name %>" required>
+                  </td>
+                  <td>
+                    <input type="text" name="code" value="<%= currency.code %>" required>
+                  </td>
+                  <td>
+                    <button type="submit" class="button-update" data-full="Оновити" data-short="Онов." >Оновити</button>
+                </form>
+                <form action="/admin/currency/delete/<%= currency.id %>" method="post" style="display:inline;">
+                    <button type="submit" class="button-delete" data-full="Видалити" data-short="Вид." onclick="return confirm('Ви впевнені, що хочете видалити валюту?')">Видалити</button>
+                </form>
+                  </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <hr>
-
-  <h2>Редагувати або видалити валюту</h2>
-  <table border="1">
-    <tr>
-      <th>Назва</th>
-      <th>Код</th>
-      <th>Дії</th>
-    </tr>
-    <% currencies.forEach(currency => { %>
-      <tr>
-        <form action="/admin/currency/update/<%= currency.id %>" method="post">
-          <td>
-            <input type="text" name="name" value="<%= currency.name %>" required>
-          </td>
-          <td>
-            <input type="text" name="code" value="<%= currency.code %>" required>
-          </td>
-          <td>
-            <button type="submit">Оновити</button>
-          </form>
-          <form action="/admin/currency/delete/<%= currency.id %>" method="post" style="display:inline;">
-            <button type="submit" onclick="return confirm('Ви впевнені, що хочете видалити валюту?')">Видалити</button>
-          </form>
-          </td>
-      </tr>
-    <% }) %>
-  </table>
-
-  <hr>
-
-  <h2>Додати курс обміну валюти на певний день</h2>
-  <form action="/admin/rate/create" method="post">
-    <label for="currencyId">Оберіть валюту:</label>
-    <select name="currencyId" id="currencyId" required>
-      <% currencies.forEach(currency => { %>
-        <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
-      <% }) %>
-    </select>
     <br>
-    <label for="date">Дата:</label>
-    <input type="date" id="date" name="date" required>
-    <br>
-    <label for="rate">Купівля:</label>
-    <input type="number" step="0.0001" id="buy" name="buy" required>
-    <br>
-    <label for="rate">Продаж:</label>
-    <input type="number" step="0.0001" id="sell" name="sell" required>
-    <br>
-    <button type="submit">Додати курс</button>
-  </form>
 
-  <hr>
+    <section class="collapsible">
+      <div class="collapsible-header">
+        <h3>Додати курс обміну валюти на певний день</h3>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="contentAdmin">
+        <form action="/admin/rate/create" method="post">
+          <label for="currencyId">Оберіть валюту:</label>
+          <select name="currencyId" id="currencyId" required>
+            <% currencies.forEach(currency => { %>
+              <option value="<%= currency.id %>"><%= currency.name %> (<%= currency.code %>)</option>
+            <% }) %>
+          </select>
 
-  <a href="/">Назад на головну</a>
+          <label for="date">Дата:</label>
+          <input type="date" id="date" name="date" required>
+
+          <label for="buy">Купівля:</label>
+          <input type="number" step="0.0001" id="buy" name="buy" required>
+
+          <label for="sell">Продаж:</label>
+          <input type="number" step="0.0001" id="sell" name="sell" required>
+
+          <button type="submit">Додати курс</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+<script>
+  document.querySelectorAll('.collapsible').forEach(section => {
+    const header = section.querySelector('.collapsible-header');
+    const arrow = header.querySelector('.arrow');
+    const content = section.querySelector('.contentAdmin');
+
+    header.addEventListener('click', () => {
+      const isOpen = section.classList.toggle('active');
+      content.style.display = isOpen ? 'block' : 'none';
+      arrow.textContent = isOpen ? '▲' : '▼';
+    });
+  });
+</script>
 
 </body>
 </html>

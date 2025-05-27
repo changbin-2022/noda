@@ -1,0 +1,188 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f2f4f8;
+  color: #2c3e50;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 28px;
+  color: #2c3e50;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  margin-top: 10px;
+  color: #2c3e50;
+  font-size: 22px;
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+  padding-top: 20px;
+  min-height: 300px;
+}
+
+.rates, .history {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content > .rates {
+  border-right: 1px solid #ccc;
+  padding-right: 20px;
+}
+
+.content > .history {
+  padding-left: 20px;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table thead tr:first-child th:first-child {
+  border-top-left-radius: 8px;
+}
+
+table thead tr:first-child th:last-child {
+  border-top-right-radius: 8px;
+}
+
+table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+th {
+  background-color: #6c63ff;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.date-range {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 150px;
+}
+
+label {
+  font-weight: bold;
+}
+
+select, input[type="date"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  align-self: center;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #584ae3;
+}
+
+footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-button {
+  background-color: #6c63ff;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-button:hover {
+  background-color: #584ae3;
+}
+
+@media (max-width: 840px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .content > .rates,
+  .content > .history {
+    border: none;
+    padding: 0;
+  }
+
+  .admin-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+
