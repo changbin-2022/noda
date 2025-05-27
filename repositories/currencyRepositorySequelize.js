@@ -91,20 +91,45 @@ class CurrencyRepositorySequelize {
     }
   }
 
-  // отримати всі курси валют з пов’язаною валютою
-  async getAllExchangeRates() {
-    try {
-      return await ExchangeRate.findAll({
-        include: {
-          model: Currency,
-          as: 'currency'
+    // отримати всі курси валют з пов’язаною валютою
+    async getAllExchangeRates() {
+        try {
+            return await ExchangeRate.findAll({
+                include: {
+                    model: Currency,
+                    as: 'currency'
+                }
+            });
+        } catch (error) {
+            console.error("Error getting all exchange rates: ", error);
+            return [];
         }
-      });
-    } catch (error) {
-      console.error("Error getting all exchange rates: ", error);
-      return [];
     }
-  }
+
+    async getLatestExchangeRates() {
+        try {
+            return await ExchangeRate.findAll({
+                include: [{
+                    model: Currency,
+                    as: 'currency',
+                    required: false,
+                    right: true,
+                    on: sequelize.literal(`
+                      [ExchangeRate].[currencyId] = [currency].[id]
+                      AND NOT EXISTS (
+                        SELECT 1
+                        FROM [ExchangeRates] AS er2
+                        WHERE er2.currencyId = [ExchangeRate].[currencyId]
+                          AND er2.date > [ExchangeRate].[date]
+                      )
+                    `)
+                }]
+            });
+        } catch (error) {
+            console.error("Error getting all exchange rates: ", error);
+            return [];
+        }
+    }
 }
 
 module.exports = new CurrencyRepositorySequelize();
