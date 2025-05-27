@@ -1,166 +1,203 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Адмін-панель</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/styleAdmin.css" />
+    <link rel="stylesheet" href="/styleRoute.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-<h1>Адмін-панель</h1>
 
-<!-- CREATE CURRENCY -->
-<section>
-    <h2>Додати нову валюту</h2>
-    <form id="createCurrencyForm">
-        <label>Назва валюти:
-            <input type="text" name="name" required>
-        </label>
-        <label>Код валюти:
-            <input type="text" name="code" required>
-        </label>
-        <button>Додати валюту</button>
-    </form>
-</section>
+<div class="container">
+    <h1>Курс валют</h1>
+    <div class="header-row">
+        <a href="/" class="back-link">← Назад на головну</a>
+        <h2>Адмін-панель</h2>
+    </div>
 
-<hr>
+    <!-- CREATE CURRENCY -->
+    <section class="collapsible">
+        <div class="collapsible-header">
+        <h3>Додати нову валюту</h3>
+        <span class="arrow">▼</span>
+        </div>
+        <div class="contentAdmin">
+        <form id="createCurrencyForm">
+            <label for="name">Назва валюти:</label>
+            <input type="text" id="name" name="name" required>
 
-<!-- LIST + UPDATE + DELETE CURRENCIES -->
-<section>
-    <h2>Керування валютами</h2>
-    <table>
-        <thead>
-        <tr><th>Назва</th><th>Код</th><th>Дії</th></tr>
-        </thead>
-        <tbody id="currenciesTbody"></tbody>
-    </table>
-</section>
+            <label for="code">Код валюти:</label>
+            <input type="text" id="code" name="code" required>
 
-<hr>
+            <button type="submit">Додати валюту</button>
+        </form>
+        </div>
+    </section>
 
-<!-- CREATE RATE -->
-<section>
-    <h2>Додати курс</h2>
-    <form id="createRateForm">
-        <label>Валюта:
+    <br>
+
+    <!-- LIST + UPDATE + DELETE CURRENCIES -->
+    <section class="collapsible">
+        <div class="collapsible-header">
+        <h3>Редагувати або видалити валюту</h3>
+        <span class="arrow">▼</span>
+        </div>
+        <div class="contentAdmin">
+        <table>
+            <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Код</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+            <tbody id="currenciesTbody"></tbody>
+        </table>
+        </div>
+    </section>
+
+    <br>
+
+    <!-- CREATE RATE -->
+    <section class="collapsible">
+        <div class="collapsible-header">
+        <h3>Додати курс обміну валюти на певний день</h3>
+        <span class="arrow">▼</span>
+        </div>
+        <div class="contentAdmin">
+        <form id="createRateForm">
+            <label for="currencySelect">Оберіть валюту:</label>
             <select name="currencyId" id="currencySelect" required></select>
-        </label>
-        <label>Дата:
-            <input type="date" name="date" required>
-        </label>
-        <label>Купівля:
-            <input type="number" step="0.0001" name="buy" required>
-        </label>
-        <label>Продаж:
-            <input type="number" step="0.0001" name="sell" required>
-        </label>
-        <button>Додати курс</button>
-    </form>
-</section>
+
+            <label for="date">Дата:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="buy">Купівля:</label>
+            <input type="number" step="0.0001" id="buy" name="buy" required>
+
+            <label for="sell">Продаж:</label>
+            <input type="number" step="0.0001" id="sell" name="sell" required>
+
+            <button type="submit">Додати курс</button>
+        </form>
+        </div>
+    </section>
+</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const tbody = document.getElementById('currenciesTbody');
-        const currencySelect = document.getElementById('currencySelect');
+  document.querySelectorAll('.collapsible').forEach(section => {
+    const header = section.querySelector('.collapsible-header');
+    const arrow = header.querySelector('.arrow');
+    const content = section.querySelector('.contentAdmin');
 
-        // load currencies for both table and rate‐form
-        async function loadCurrencies() {
-            const res = await fetch('/admin/api/currency');
-            if (!res.ok) return alert('Не вдалося завантажити валюти');
-            const currencies = await res.json();
-
-            // table
-            tbody.innerHTML = '';
-            currencies.forEach(c => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-            <td><input class="name" data-id="${c.id}" value="${c.name}"></td>
-            <td><input class="code" data-id="${c.id}" value="${c.code}"></td>
-            <td>
-              <button class="update" data-id="${c.id}">Оновити</button>
-              <button class="delete" data-id="${c.id}">Видалити</button>
-            </td>`;
-                tbody.appendChild(tr);
-            });
-
-            // rate‐form select
-            currencySelect.innerHTML = '';
-            currencies.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = `${c.name} (${c.code})`;
-                currencySelect.appendChild(opt);
-            });
-        }
-
-        // CREATE currency
-        document.getElementById('createCurrencyForm').addEventListener('submit', async e => {
-            e.preventDefault();
-            const payload = Object.fromEntries(new FormData(e.target));
-            const res = await fetch('/admin/api/currency', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) {
-                const { error } = await res.json();
-                return alert(`Помилка: ${error}`);
-            }
-            e.target.reset();
-            await loadCurrencies();
-        });
-
-        // UPDATE / DELETE (delegation)
-        tbody.addEventListener('click', async e => {
-            const id = e.target.dataset.id;
-            if (e.target.matches('.update')) {
-                const row = e.target.closest('tr');
-                const name = row.querySelector('.name').value;
-                const code = row.querySelector('.code').value;
-                const res = await fetch(`/admin/api/currency/${id}`, {
-                    method: 'PATCH',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({ name, code })
-                });
-                if (!res.ok) {
-                    const { error } = await res.json();
-                    return alert(`Помилка: ${error}`);
-                }
-                await loadCurrencies();
-            }
-            if (e.target.matches('.delete')) {
-                if (!confirm('Видалити цю валюту?')) return;
-                const res = await fetch(`/admin/api/currency/${id}`, {
-                    method: 'DELETE'
-                });
-                if (!res.ok) {
-                    const { error } = await res.json();
-                    return alert(`Помилка: ${error}`);
-                }
-                await loadCurrencies();
-            }
-        });
-
-        // CREATE rate
-        document.getElementById('createRateForm').addEventListener('submit', async e => {
-            e.preventDefault();
-            const payload = Object.fromEntries(new FormData(e.target));
-            payload.buy = parseFloat(payload.buy);
-            payload.sell = parseFloat(payload.sell);
-            const res = await fetch('/admin/api/rate', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) {
-                const { error } = await res.json();
-                return alert(`Помилка: ${error}`);
-            }
-            alert('Курс додано');
-            e.target.reset();
-        });
-
-        loadCurrencies();
+    header.addEventListener('click', () => {
+      const isOpen = section.classList.toggle('active');
+      content.style.display = isOpen ? 'block' : 'none';
+      arrow.textContent = isOpen ? '▲' : '▼';
     });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.getElementById('currenciesTbody');
+    const currencySelect = document.getElementById('currencySelect');
+
+    async function loadCurrencies() {
+      const res = await fetch('/admin/api/currency');
+      if (!res.ok) return alert('Не вдалося завантажити валюти');
+      const currencies = await res.json();
+
+      tbody.innerHTML = '';
+      currencies.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" name="name" data-id="${c.id}" value="${c.name}"></td>
+          <td><input type="text" name="code" data-id="${c.id}" value="${c.code}"></td>
+          <td>
+            <button class="button-update update" data-full="Оновити" data-short="Онов." data-id="${c.id}">Оновити</button>
+            <button class="button-delete delete" data-full="Видалити" data-short="Вид." data-id="${c.id}">Видалити</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+
+      currencySelect.innerHTML = '';
+      currencies.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.name} (${c.code})`;
+        currencySelect.appendChild(opt);
+      });
+    }
+
+    document.getElementById('createCurrencyForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const payload = Object.fromEntries(new FormData(e.target));
+      const res = await fetch('/admin/api/currency', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+          const { error } = await res.json();
+          return alert(`Помилка: ${error}`);
+      }
+      e.target.reset();
+      await loadCurrencies();
+    });
+
+    tbody.addEventListener('click', async e => {
+      const id = e.target.dataset.id;
+      if (e.target.matches('.update')) {
+        const row = e.target.closest('tr');
+        const name = row.querySelector('.name').value;
+        const code = row.querySelector('.code').value;
+        const res = await fetch(`/admin/api/currency/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, code })
+        });
+        if (!res.ok) {
+          const { error } = await res.json();
+          return alert(`Помилка: ${error}`);
+        }
+        await loadCurrencies();
+      }
+
+      if (e.target.matches('.delete')) {
+        if (!confirm('Видалити цю валюту?')) return;
+        const res = await fetch(`/admin/api/currency/${id}`, {
+            method: 'DELETE'
+        });
+        if (!res.ok) {
+            const { error } = await res.json();
+            return alert(`Помилка: ${error}`);
+        }
+        await loadCurrencies();
+      }
+    });
+
+    document.getElementById('createRateForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const payload = Object.fromEntries(new FormData(e.target));
+      payload.buy = parseFloat(payload.buy);
+      payload.sell = parseFloat(payload.sell);
+      const res = await fetch('/admin/api/rate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+          const { error } = await res.json();
+          return alert(`Помилка: ${error}`);
+      }
+      alert('Курс додано');
+      e.target.reset();
+    });
+
+    loadCurrencies();
+  });
 </script>
+
 </body>
 </html>

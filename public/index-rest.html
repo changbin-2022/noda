@@ -3,40 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Курси валют на сьогодні</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-<h1>Курси валют на <span id="today"></span></h1>
+<div class="container">
+    <h1>Курс валют</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>Валюта</th>
-        <th>Купівля</th>
-        <th>Продаж</th>
-    </tr>
-    </thead>
-    <tbody id="todayRatesTbody"></tbody>
-</table>
+    <main class="content">
+        <section class="rates">
+            <h2>Курси валют на <span id="today"></span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Валюта</th>
+                        <th>Купівля</th>
+                        <th>Продаж</th>
+                    </tr>
+                </thead>
+                <tbody id="todayRatesTbody"></tbody>
+            </table>
+        </section>
 
-<hr>
+        <section class="history">
+            <h2>Перегляд історії курсу</h2>
+            <form id="historyForm">
+                <label>Валюта:</label>
+                <select id="curSelect" name="currencyId" required></select>
 
-<h2>Перегляд історії курсу</h2>
-<form id="historyForm">
-    <label>Валюта:
-        <select id="curSelect" name="currencyId" required></select>
-    </label>
-    <label>Початкова дата:
-        <input type="date" name="startDate" required>
-    </label>
-    <label>Кінцева дата:
-        <input type="date" name="endDate" required>
-    </label>
-    <button>Переглянути історію</button>
-</form>
+                <div class="date-range">
+                    <div class="date-field">
+                        <label>Початкова дата:</label>
+                        <input type="date" name="startDate" required>
+                    </div>
+                    <div class="date-field">
+                        <label>Кінцева дата:</label>
+                        <input type="date" name="endDate" required>
+                    </div>
+                </div>
 
-<hr>
-<a href="/admin">Адмін-панель</a>
+                <button>Переглянути історію</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+      <a class="admin-button" href="/admin">Перейти в адмін-панель</a>
+    </footer>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', async () => {

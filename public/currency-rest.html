@@ -3,20 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Історія курсу валюти</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/styleRoute.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        .currency-table {
+            width: 60%;
+            max-width: 100%;
+            margin: 30px auto 0;
+        }
+        #emptyMessage {
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1 id="pageTitle">Історія курсу</h1>
+<div class="container">
+    <h1>Курс валют</h1>
+    <div class="header-row">
+      <a href="/" class="back-link">← Назад на головну</a>
+      <h2 id="pageTitle">Історія курсу валюти</h2>
+    </div>
 
-<table>
-    <thead>
-    <tr><th>Дата</th><th>Купівля</th><th>Продаж</th></tr>
-    </thead>
-    <tbody id="historyTbody"></tbody>
-</table>
+    <table class="currency-table" id="currencyTable">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Купівля</th>
+                <th>Продаж</th>
+            </tr>
+        </thead>
+        <tbody id="historyTbody"></tbody>
+    </table>
 
-<br>
-<a href="/">На головну</a>
+    <p id="emptyMessage">Дані за обраний період відсутні.</p>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
@@ -32,21 +55,29 @@
         if (!res.ok) return alert('Не вдалося завантажити історію');
         const { rates, currencyName } = await res.json();
 
-        // set page title
         document.getElementById('pageTitle').textContent =
             `Історія для ${currencyName}`;
 
-        // fill table
         const tbody = document.getElementById('historyTbody');
+        const table = document.getElementById('currencyTable');
+        const emptyMessage = document.getElementById('emptyMessage');
+
         tbody.innerHTML = '';
-        rates.forEach(r => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-          <td>${r.date}</td>
-          <td>${r.buy}</td>
-          <td>${r.sell}</td>`;
-            tbody.appendChild(tr);
-        });
+        if (rates.length > 0) {
+            rates.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>${r.date}</td>
+                <td>${r.buy}</td>
+                <td>${r.sell}</td>`;
+                tbody.appendChild(tr);
+            });
+            table.style.display = 'table';
+            emptyMessage.style.display = 'none';
+        } else {
+            table.style.display = 'none';
+            emptyMessage.style.display = 'block';
+        }
     });
 </script>
 </body>
